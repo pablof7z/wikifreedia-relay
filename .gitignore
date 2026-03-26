@@ -1,0 +1,17 @@
+db
+db-shm
+db-wal
+relay
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+*.dll
+*.out
+.DS_Store
+.vscode
+.idea
+*.swp
+*.swo
+*~

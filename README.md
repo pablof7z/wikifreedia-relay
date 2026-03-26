@@ -8,6 +8,8 @@ A Nostr relay implementation for wiki events, built with [Khatru](https://github
 - SQLite3 backend for event storage
 - Fast and efficient Nostr relay implementation
 - Full-text search support for wiki events
+- Negentropy sync support (NIP-77)
+- NIP-11 advertises supported capabilities, including NIP-77
 
 ## Building
 
@@ -29,6 +31,8 @@ The relay will start on `0.0.0.0:3334` by default.
 - Only event kinds 30818, 30819, 818, 819 are accepted
 - Relay name: "Wikifreedia relay"
 - Relay pubkey: `fa984bd7dbb282f07e16e7ae87b26a2a7b9b90b7246a44771f0cf5ae58018f52`
+- Negentropy is enabled
+- NIP-11 advertises NIP-77 automatically via `khatru`
 
 ## Development
 

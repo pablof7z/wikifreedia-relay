@@ -11,13 +11,15 @@ import (
 	"github.com/nbd-wtf/go-nostr"
 )
 
-func main() {
-	allowedKinds := [...]int{30818, 30819, 818, 819}
-	relay := khatru.NewRelay()
+var allowedKinds = [...]int{30818, 30819, 818, 819}
 
-	db := sqlite3.SQLite3Backend{DatabaseURL: "./db"}
+func newRelay(databaseURL string) (*khatru.Relay, *sqlite3.SQLite3Backend, error) {
+	relay := khatru.NewRelay()
+	relay.Negentropy = true
+
+	db := &sqlite3.SQLite3Backend{DatabaseURL: databaseURL}
 	if err := db.Init(); err != nil {
-		panic(err)
+		return nil, nil, err
 	}
 
 	relay.Info.Name = "Wikifreedia relay"
@@ -29,6 +31,7 @@ func main() {
 	relay.QueryEvents = append(relay.QueryEvents, db.QueryEvents)
 	relay.CountEvents = append(relay.CountEvents, db.CountEvents)
 	relay.DeleteEvent = append(relay.DeleteEvent, db.DeleteEvent)
+	relay.ReplaceEvent = append(relay.ReplaceEvent, db.ReplaceEvent)
 	relay.RejectEvent = append(relay.RejectEvent,
 		func(ctx context.Context, event *nostr.Event) (reject bool, msg string) {
 			if !slices.Contains(allowedKinds[:], event.Kind) {
@@ -38,6 +41,17 @@ func main() {
 		},
 	)
 
+	return relay, db, nil
+}
+
+func main() {
+	relay, _, err := newRelay("./db")
+	if err != nil {
+		panic(err)
+	}
+
 	fmt.Println("running on :3334")
-	http.ListenAndServe(":3334", relay)
+	if err := http.ListenAndServe(":3334", relay); err != nil {
+		panic(err)
+	}
 }

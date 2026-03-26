@@ -40,4 +40,4 @@ Dependencies:
 
 ## License
 
-TBD
+MIT
